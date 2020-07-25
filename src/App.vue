@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import LandingPage from './components/HelloWorld.vue'
+import LandingPage from './components/LandingPage.vue'
 
 export default {
   name: 'App',
@@ -13,14 +13,20 @@ export default {
 }
 </script>
 
-<style>
-* {
+<style lang='scss'>
+* { 
   box-sizing: box-border;
   margin: 0;
   padding: 0;
   color: white;
   background: black;
+
+  ::selection {
+    color: red;
+  }
 }
+  
+
 
 body {
   min-height: 100vh;
