@@ -12,11 +12,13 @@ export default {
   data: function() {
     return {
       borderOpacity: 0.5,
-      tags: []
+      tags: [],
+      countries: [],
     }
   },
   mounted: function() {
     this.getTags();
+    this.getCountries();
   },
   methods: {
     mouseover: function() {
@@ -25,7 +27,7 @@ export default {
     mouseleave: function() {
       this.borderOpacity = 0.5;
     },
-    getTags() {
+    getTags: function() {
       axios({
         method: 'get',
         url: `${process.env.VUE_APP_API_HOST}/tags/`,
@@ -33,9 +35,9 @@ export default {
           username: process.env.VUE_APP_API_USERNAME,
           password: process.env.VUE_APP_API_PASSWORD,
         }
-      }).then(response => this.tags = response.data)
+      }).then(response => this.tags = response.data);
     },
-    getCountries() {
+    getCountries: function() {
       axios({
         method: 'get',
         url: `${process.env.VUE_APP_API_HOST}/countries/`,
@@ -43,14 +45,34 @@ export default {
           username: process.env.VUE_APP_API_USERNAME,
           password: process.env.VUE_APP_API_PASSWORD,
         }
-      })
-    }
+      }).then(response => this.countries = response.data);
+    },
   }, 
   computed: {
     hoverStyle: function() {
       return {
         border: `1px solid rgba(255, 255, 255, ${this.borderOpacity})`
       }
+    },
+    collection: function() {
+      var collectionAttr = [];
+      for (const element of this.tags) {
+        let newAttr = {
+          title: element.tag,
+          type: 'tag',
+          article: element.articles,
+        };
+        collectionAttr.push(newAttr);
+      }
+      for (const element of this.countries) {
+        let newAttr = {
+          title: element.country,
+          type: 'country',
+          article: element.articles,
+        };
+        collectionAttr.push(newAttr);
+      }
+      return collectionAttr;
     }
   }
 }
