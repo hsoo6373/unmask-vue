@@ -1,6 +1,6 @@
 <template>
   <div class="landing-page">
-    <h1 :style="hoverStyle" @mouseover="mouseover" @mouseleave="mouseleave">Unmask</h1>
+    <h1 :class="glitch" data-text="Unmask" :style="hoverStyle" @mouseover="mouseover" @mouseleave="mouseleave" @click="glitchPlay">Unmask</h1>
   </div>
 </template>
 
@@ -14,6 +14,7 @@ export default {
       borderOpacity: 0.5,
       tags: [],
       countries: [],
+      clicked: false,
     }
   },
   mounted: function() {
@@ -47,6 +48,15 @@ export default {
         }
       }).then(response => this.countries = response.data);
     },
+    glitchPlay: function() {
+      var audio = new Audio(require('../assets/audio/glitch.mp3'));
+      this.clicked = true;
+      audio.play();
+      audio.onended = () => {
+        this.clicked = false;
+      };
+    },
+    
   }, 
   computed: {
     hoverStyle: function() {
@@ -73,6 +83,11 @@ export default {
         collectionAttr.push(newAttr);
       }
       return collectionAttr;
+    },
+    glitch: function() {
+      return {
+        glitch: this.clicked,
+      }
     }
   }
 }
@@ -80,6 +95,7 @@ export default {
 
 <style scoped lang='scss'>
 @import "~@/assets/scss/_typo.scss";
+@import "~@/assets/scss/_glitch.scss";
 
 h1 {
   font-size: 2em;
@@ -88,6 +104,7 @@ h1 {
   -moz-osx-font-smoothing: grayscale;
   
   padding: 0 2rem;
+  letter-spacing: .2em;
 }
 
 .landing-page {
