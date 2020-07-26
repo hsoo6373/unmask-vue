@@ -54,8 +54,6 @@ export default {
     }
   }
 }
-
-
 </script>
 
 <style scoped lang='scss'>
@@ -75,9 +73,4 @@ h1 {
   flex-direction: column;
   align-items: center;
 }
-
-.break {
-  flex-basis: 100%;
-}
-
 </style>
