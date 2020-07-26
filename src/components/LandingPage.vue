@@ -5,12 +5,18 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'LandingPage',
   data: function() {
     return {
       borderOpacity: 0.5,
+      tags: []
     }
+  },
+  mounted: function() {
+    this.getTags();
   },
   methods: {
     mouseover: function() {
@@ -18,6 +24,26 @@ export default {
     },
     mouseleave: function() {
       this.borderOpacity = 0.5;
+    },
+    getTags() {
+      axios({
+        method: 'get',
+        url: `${process.env.VUE_APP_API_HOST}/tags/`,
+        auth: {
+          username: process.env.VUE_APP_API_USERNAME,
+          password: process.env.VUE_APP_API_PASSWORD,
+        }
+      }).then(response => this.tags = response.data)
+    },
+    getCountries() {
+      axios({
+        method: 'get',
+        url: `${process.env.VUE_APP_API_HOST}/countries/`,
+        auth: {
+          username: process.env.VUE_APP_API_USERNAME,
+          password: process.env.VUE_APP_API_PASSWORD,
+        }
+      })
     }
   }, 
   computed: {
@@ -32,7 +58,6 @@ export default {
 
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang='scss'>
 @import "~@/assets/scss/_typo.scss";
 
@@ -45,7 +70,14 @@ h1 {
   padding: 0 2rem;
 }
 
-.hover {
-  border: 1px solid #fff;
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+.break {
+  flex-basis: 100%;
+}
+
 </style>
