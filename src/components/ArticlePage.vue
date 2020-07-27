@@ -1,5 +1,5 @@
 <template>
-  <article class="unmask-article">
+  <article class="article-page">
     <div class="article-encapsulation">
       <h1>{{ article.title }}</h1>
       <!--Video for the audiowave-->
@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: 'UnmaskArticle',
+  name: 'ArticlePage',
   props: {
     article: {
       type: Object,
