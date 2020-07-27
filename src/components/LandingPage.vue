@@ -6,6 +6,7 @@
 
 <script>
 import axios from 'axios'
+import { router } from '../routes.js'
 
 export default {
   name: 'LandingPage',
@@ -54,6 +55,7 @@ export default {
       audio.play();
       audio.onended = () => {
         this.clicked = false;
+        router.push({ path: '/tags'});
       };
     },
     
