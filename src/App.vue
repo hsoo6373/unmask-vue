@@ -17,7 +17,7 @@ export default {
   color: white;
   background: black;
 
-  ::selection {
+  &::selection {
     color: red;
   }
 }
