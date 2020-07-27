@@ -12,10 +12,12 @@ new Vue({
     mounted: function() {
         this.getTags();
         this.getCountries();
+        this.getArticles();
     },
     methods: {
         getTags: function() { axios().get('/tags/').then(response => this.$store.state.tags = response.data) },
         getCountries: function() { axios().get('/countries/').then(response => this.$store.state.countries = response.data) },
+        getArticles: function() { axios().get('/articles/').then(response => this.$store.state.articles = response.data) },
     },
     render: h => h(App),
 }).$mount('#app')
