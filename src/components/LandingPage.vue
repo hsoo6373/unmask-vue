@@ -1,6 +1,6 @@
 <template>
   <div class="landing-page">
-    <h1 :class="glitch" data-text="Unmask" :style="hoverStyle" @mouseover="mouseover" @mouseleave="mouseleave" @click="glitchPlay">Unmask</h1>
+    <h1 :class="glitch" data-text="Unmask" :style="hoverStyle" @mouseover="mouseover" @mouseleave="mouseleave" @click.once="glitchPlay">Unmask</h1>
   </div>
 </template>
 
