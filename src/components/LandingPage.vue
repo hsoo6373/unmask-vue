@@ -59,6 +59,7 @@ h1 {
   
   padding: 0 2rem;
   letter-spacing: .2em;
+  cursor: crosshair;
 }
 
 .landing-page {
