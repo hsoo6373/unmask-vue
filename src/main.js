@@ -9,7 +9,7 @@ Vue.config.productionTip = false;
 new Vue({
     router,
     store,
-    mounted: function() {
+    created: function() {
         this.getTags();
         this.getCountries();
         this.getArticles();
