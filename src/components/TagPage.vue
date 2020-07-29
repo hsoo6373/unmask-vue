@@ -1,5 +1,5 @@
 <template>
-  <div class="tag-page">
+  <div id="list" class="tag-page">
     <template v-for="repeat in infiniteCounter">
     <ul :key="repeat">
       <h1 :style="{ fontSize: '4em'}">{{ repeat }}</h1>
@@ -19,7 +19,7 @@ export default {
   name: 'TagPage',
   data: function() {
     return {
-      infiniteCounter: 5,
+      infiniteCounter: 2,
     }
   },
   components: {
@@ -36,16 +36,12 @@ export default {
     },
     intersecting: function() {
       this.infiniteCounter++;
-    }
+    },
   },
   computed: {
     collection: function() {
       return this.$store.getters.getCollection;
     },
-    check: function() {
-      console.log(" Visible");
-      
-    }
   }
 }
 </script>

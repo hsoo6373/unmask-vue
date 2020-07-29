@@ -1,4 +1,5 @@
 <template>
+    <div></div>
 </template>
 
 <script>
@@ -11,7 +12,7 @@
         },
         mounted: function() {
             let option = {
-                rootMargin: '0px 0px 100px 0px',
+                rootMargin: '0px 0px 200px 0px',
             };
             this.observer = new IntersectionObserver(([entry]) => {
                 if (entry && entry.isIntersecting) {
