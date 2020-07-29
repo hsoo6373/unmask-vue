@@ -24,7 +24,7 @@ export default {
 
 body {
   min-height: 100vh;
-  line-height: 1.6;
+  line-height: 1.3;
 
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
