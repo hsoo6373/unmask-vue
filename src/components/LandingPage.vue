@@ -1,6 +1,6 @@
 <template>
   <div class="landing-page">
-    <h1 :class="glitch" data-text="Unmask" :style="hoverStyle" @mouseover="mouseover" @mouseleave="mouseleave" @click.once="glitchPlay">Unmask</h1>
+    <h1 :class="{glitch: this.clicked}" data-text="Unmask" :style="hoverStyle" @mouseover="mouseover" @mouseleave="mouseleave" @click.once="glitchPlay">Unmask</h1>
   </div>
 </template>
 
@@ -38,11 +38,6 @@ export default {
         border: `1px solid rgba(255, 255, 255, ${this.borderOpacity})`
       }
     },
-    glitch: function() {
-      return {
-        glitch: this.clicked,
-      }
-    },
   }
 }
 </script>
@@ -52,6 +47,7 @@ export default {
 @import "~@/assets/scss/_glitch.scss";
 
 h1 {
+  line-height: 1.8;
   font-size: 2em;
   font-family: CustomY78;
   -webkit-font-smoothing: antialiased;
