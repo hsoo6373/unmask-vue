@@ -6,7 +6,7 @@ export const store = new Vuex.Store({
   state: {
     tags: [],
     countries: [],
-    article: [],
+    articles: [],
     collection: [],
   },
   getters: {
@@ -52,8 +52,8 @@ export const store = new Vuex.Store({
       state.collection = state.tags.concat(state.countries);
     },
     
-    articles(state, articleCollection) {
-      state.articles = articleCollection;
+    articles(state, axiosResponse) {
+      state.articles = axiosResponse;
     },
   }
 });
