@@ -7,14 +7,14 @@ import axios from './articleAPI.js'
 export default {
   name: 'App',
   created: function() {
-      this.getTags();
-      this.getCountries();
-      this.getArticles();
+    this.setTags();
+    this.setCountries();
+    this.setArticles();
   },
   methods: {
-      getTags: function() { axios().get('/tags/').then(response => this.$store.state.tags = response.data) },
-      getCountries: function() { axios().get('/countries/').then(response => this.$store.state.countries = response.data) },
-      getArticles: function() { axios().get('/articles/').then(response => this.$store.state.articles = response.data) },
+    setTags: function() { axios().get('/tags/').then(response => this.$store.commit('tags', response.data)) },
+    setCountries: function() { axios().get('/countries/').then(response => this.$store.commit('countries', response.data)) },
+    setArticles: function() { axios().get('/articles/').then(response => this.$store.commit('articles', response.data)) },
   },
 }
 </script>
