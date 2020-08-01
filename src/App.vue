@@ -3,7 +3,8 @@
 </template>
 
 <script>
-import axios from './articleAPI.js'
+import axios from './assets/javascript/articleAPI.js'
+
 export default {
   name: 'App',
   created: function() {
