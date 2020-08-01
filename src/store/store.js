@@ -21,25 +21,17 @@ export const store = new Vuex.Store({
       });
     },
     
-    getTags: state => {
-      return state.tags;
-    },
+    getTags: state => state.tags,
     
-    getCountries: state => {
-      return state.countries;
-    },
+    getCountries: state => state.countries,
     
-    getTagArticles: state => tag => {
-      return state.tags.filter(item => item.tag === tag);
-    },
+    getTagArticles: state => tag => state.tags.filter(item => item.tag === tag),
     
-    getCountryArticles: state => country => {
-      return state.countries.filter(item => item.country === country);
-    },
+    getCountryArticles: state => country => state.countries.filter(item => item.country === country),
     
-    getArticle: state => article => {
-      return state.articles.find(item =>  item.title === article);
-    }
+    getArticle: state => article => state.articles.find(item =>  item.title === article),
+    
+    getRandomRecording: state => state.articles[Math.floor(Math.random() * state.articles.length)].speech
   },
   mutations: {
     tags(state, axiosResponse) {
