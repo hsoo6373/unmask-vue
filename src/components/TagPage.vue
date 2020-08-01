@@ -1,5 +1,6 @@
 <template>
   <div id="list" class="tag-page">
+    <PollyAudio></PollyAudio>
     <template v-for="repeat in infiniteCounter">
     <ul :key="repeat">
       <h1 :style="{ fontSize: '4em'}">{{ repeat }}</h1>
@@ -14,16 +15,18 @@
 
 <script>
 import Observer from './Observer';
+import PollyAudio from './PollyAudio';
 
 export default {
   name: 'TagPage',
   data: function() {
     return {
-      infiniteCounter: 2,
+      infiniteCounter: 1,
     }
   },
   components: {
     Observer,
+    PollyAudio,
   },
   methods: {
     assignClass: function(index, repeat) {
