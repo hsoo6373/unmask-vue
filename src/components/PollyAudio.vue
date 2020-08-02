@@ -13,11 +13,33 @@ export default {
       maxAudioPlaying: 3,
       reverbIndex: 0,
       audioContext: undefined,
-      listener: undefined,
       reverbSamples: [ 
         'https://hrithviksood.s3-ap-southeast-2.amazonaws.com/unmask/audio/ReverbSample/customReverb.wav',
         'https://hrithviksood.s3-ap-southeast-2.amazonaws.com/unmask/audio/ReverbSample/customReverb2.wav',
       ],
+      quadrant: {
+        FIRST: {
+          xPos: Math.floor(Math.random() * 11) * 100,
+          yPos: Math.floor(Math.random() * 11) * 100,
+          zPos: Math.floor(Math.random() * 11) * 100,
+        },
+        SECOND: {
+          xPos: Math.floor(Math.random() * 11) * -100,
+          yPos: Math.floor(Math.random() * 11) * -100,
+          zPos: Math.floor(Math.random() * 11) * 100,
+        },
+        THIRD: {
+          xPos: Math.floor(Math.random() * 11) * -100,
+          yPos: Math.floor(Math.random() * 11) * 100,
+          zPos: Math.floor(Math.random() * 11) * -100,
+        },
+        FOURTH: {
+          xPos: Math.floor(Math.random() * 11) * 100,
+          yPos: Math.floor(Math.random() * 11) * -100,
+          zPos: Math.floor(Math.random() * 11) * -100,
+        }
+      },
+      quadrantIndex: 0,
     };
   },
   mounted: function() {
@@ -27,7 +49,7 @@ export default {
   methods: {
     setup: function() {
       this.audioContext = this.createAudioCtx();
-      this.listener = this.createListener();
+      this.createListener();
     },
     createListener: function() {
       const listener = this.audioContext.listener;
@@ -42,18 +64,15 @@ export default {
       listener.upX.value = 0;
       listener.upY.value = -1;
       listener.upZ.value = 0;
-      
-      return listener;
     },
     createAudioCtx: function() {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       return new AudioContext();
     },
     playAudio: function() {
-      const sourceUrl = 'https://hrithviksood.s3-ap-southeast-2.amazonaws.com/unmask/audio/notFound.mp3'
+      const sourceUrl = this.$store.getters.getRandomRecording
       const sourceNode = this.audioContext.createBufferSource();
-      this.setupAudio(sourceUrl, sourceNode).then(sourceNode.connect(this.getGain(2.5)));
-      sourceNode.loop = true;
+      this.setupAudio(sourceUrl, sourceNode).then(sourceNode.connect(this.getGain(2)))
       sourceNode.start(0);
     },
     getGain: function(volume) {
@@ -64,8 +83,10 @@ export default {
     },
     getReverb: function() {
       const index = Math.floor(Math.random() * this.sampleSize);
-      const reverbUrl = this.reverbSamples[index];
+      var reverbUrl = this.reverbSamples[index];
       const reverbNode = this.audioContext.createConvolver();
+      
+      reverbUrl = 'http://reverbjs.org/Library/EmptyApartmentBedroom.m4a';
       
       this.setupAudio(reverbUrl, reverbNode).then(reverbNode.connect(this.getPanner()));
       return reverbNode;
@@ -76,18 +97,15 @@ export default {
       panner.panningModel = 'HRTF';
       panner.distanceModel = 'linear';
       
-      let xPos = Math.floor(Math.random() * 11) * 100;
-      let yPos = Math.floor(Math.random() * 11) * 100;
-      let zPos = Math.floor(Math.random() * 11) * 100;
+      const currentQuad = this.currentQuadrant;
+      let xPos = currentQuad.xPos;
+      let yPos = currentQuad.yPos;
+      let zPos = currentQuad.zPos;
       
-      xPos *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
-      yPos *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
-      zPos *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
+      this.quadrantIndex = this.quadrantIndex >= 3 ? 0 : ++this.quadrantIndex;
       
-      console.log(xPos, yPos, zPos);
-      
+      console.log(xPos, yPos, zPos, this.quadrantIndex);
       panner.setPosition(xPos, yPos, zPos);
-          
       panner.connect(this.audioContext.destination);
       return panner;
     },
@@ -102,6 +120,10 @@ export default {
   computed: {
     sampleSize: function() {
       return this.reverbSamples.length;
+    },
+    currentQuadrant: function() {
+      const quads = ['FIRST', 'SECOND', 'THIRD', 'FOURTH'];
+      return this.quadrant[quads[this.quadrantIndex]];
     },
   }
 }
