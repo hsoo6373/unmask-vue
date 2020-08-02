@@ -29,9 +29,14 @@ export const store = new Vuex.Store({
     
     getCountryArticles: state => country => state.countries.filter(item => item.country === country),
     
-    getArticle: state => article => state.articles.find(item =>  item.title === article),
+    getArticles: state => article => state.articles.find(item =>  item.title === article),
     
-    getRandomRecording: state => state.articles[Math.floor(Math.random() * state.articles.length)].speech
+    getRandomRecording: state => article => {
+      if (article === undefined) {
+        console.log(Math.floor(Math.random() * state.articles.length));
+        return state.articles[Math.floor(Math.random() * state.articles.length)].speech
+      } 
+    }
   },
   mutations: {
     tags(state, axiosResponse) {
