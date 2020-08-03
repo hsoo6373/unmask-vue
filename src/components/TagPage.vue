@@ -117,6 +117,12 @@ ul {
       z-index: 2;
       display: block;
       text-align: center;
+      cursor: pointer;
+      transition: transform .2s;
+      
+      &:hover {
+        transform: scale(1.25);
+      }
     }
     
   }
