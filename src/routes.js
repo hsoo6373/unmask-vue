@@ -9,8 +9,10 @@ Vue.use(VueRouter)
 export const router = new VueRouter({
     mode: 'history',
     routes: [
-        { path: '/', component: LandingPage },
-        { path: '/tags', component: TagPage },
-        { path: '/articles', component: ArticlePage },
+        { name: 'home', path: '/', component: LandingPage },
+        { name: 'tags', path: '/tags', component: TagPage },
+        { name: 'tag', path: '/tags/:tag', component: TagPage },
+        { name: 'article', path: '/tags/:tag-name/:article', component: TagPage },
+        { path: '*', redirect: { name: 'home' } },
     ]
 });
