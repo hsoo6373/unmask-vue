@@ -9,6 +9,8 @@ export default {
   name: 'PollyAudio',
   data: function() {
     return {
+      playDelay: 3000,
+      interval: undefined,
       audiosPlaying: 0,
       maxAudioPlaying: 3,
       reverbIndex: 0,
@@ -43,14 +45,15 @@ export default {
     };
   },
   mounted: function() {
-    this.setup()
-    this.playAudio();
+    this.setup();
+    window.setTimeout(this.playAudio, this.playDelay);
   },
   methods: {
     setup: function() {
       this.audioContext = this.createAudioCtx();
       this.createListener();
     },
+    
     createListener: function() {
       const listener = this.audioContext.listener;
       const posX = 0;
@@ -70,15 +73,21 @@ export default {
       return new AudioContext();
     },
     playAudio: function() {
-      const sourceUrl = this.$store.getters.getRandomRecording
+      clearInterval(this.interval);
+      const sourceUrl = this.$store.getters.getRandomRecording();
+      console.log(sourceUrl);
       const sourceNode = this.audioContext.createBufferSource();
-      this.setupAudio(sourceUrl, sourceNode).then(sourceNode.connect(this.getGain(2)))
+      this.setupAudio(sourceUrl, sourceNode).then(sourceNode.connect(this.getGain(1)))
       sourceNode.start(0);
+      
+      // update play delay to be between 12-16 seconds
+      this.playDelay = (Math.random() * (17 - 12) + 12) * 1000;
+      this.interval = window.setInterval(this.playAudio, this.playDelay);
     },
     getGain: function(volume) {
       const gainNode = this.audioContext.createGain();
       gainNode.gain.value = volume;
-      gainNode.connect(this.getReverb());
+      gainNode.connect(this.getPanner());
       return gainNode;
     },
     getReverb: function() {
@@ -86,14 +95,11 @@ export default {
       var reverbUrl = this.reverbSamples[index];
       const reverbNode = this.audioContext.createConvolver();
       
-      reverbUrl = 'http://reverbjs.org/Library/EmptyApartmentBedroom.m4a';
-      
       this.setupAudio(reverbUrl, reverbNode).then(reverbNode.connect(this.getPanner()));
       return reverbNode;
     },
     getPanner: function() {
       var panner = this.audioContext.createPanner();
-    
       panner.panningModel = 'HRTF';
       panner.distanceModel = 'linear';
       
@@ -101,13 +107,29 @@ export default {
       let xPos = currentQuad.xPos;
       let yPos = currentQuad.yPos;
       let zPos = currentQuad.zPos;
-      
       this.quadrantIndex = this.quadrantIndex >= 3 ? 0 : ++this.quadrantIndex;
       
-      console.log(xPos, yPos, zPos, this.quadrantIndex);
       panner.setPosition(xPos, yPos, zPos);
+      
+      
+      var analyser = this.audioContext.createAnalyser();
+      var distortion = this.audioContext.createWaveShaper();
+      var biquadFilter = this.audioContext.createBiquadFilter();
+      
+      // connect the nodes together
+      
+      analyser.connect(distortion);
+      distortion.connect(biquadFilter);
+      biquadFilter.connect(panner);
+      
+      // Manipulate the Biquad filter
+      
+      biquadFilter.type = "lowshelf";
+      biquadFilter.frequency.setValueAtTime(1000, this.audioContext.currentTime);
+      
+      
       panner.connect(this.audioContext.destination);
-      return panner;
+      return analyser;
     },
     setupAudio: async function(url, node) {
       axios.get(url, { responseType: 'arraybuffer' }).then(response => {
@@ -122,7 +144,7 @@ export default {
       return this.reverbSamples.length;
     },
     currentQuadrant: function() {
-      const quads = ['FIRST', 'SECOND', 'THIRD', 'FOURTH'];
+      const quads = ['FIRST', 'SECOND', 'FOURTH', 'THIRD'];
       return this.quadrant[quads[this.quadrantIndex]];
     },
   }
