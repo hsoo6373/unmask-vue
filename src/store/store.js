@@ -10,15 +10,12 @@ export const store = new Vuex.Store({
     collection: [],
   },
   getters: {
-    getCollection: (state) => {
-      return state.collection.sort((a, b) => {
-        let nameA = a.name.toUpperCase();
-        let nameB = b.name.toUpperCase();
-        
-        if (nameA < nameB) return -1;
-        else if (nameA > nameB) return 1;
-        else return 0;
-      });
+    getCollection: state => query => {
+      // return all
+      if (query === undefined)
+        return state.collection
+      else
+        return state.collection.filter(item => item.name === query)
     },
     
     getTags: state => state.tags,
@@ -33,7 +30,6 @@ export const store = new Vuex.Store({
     
     getRandomRecording: state => article => {
       if (article === undefined) {
-        console.log(Math.floor(Math.random() * state.articles.length));
         return state.articles[Math.floor(Math.random() * state.articles.length)].speech
       } 
     }
@@ -42,11 +38,13 @@ export const store = new Vuex.Store({
     tags(state, axiosResponse) {
       state.tags = appendToArray('tag', axiosResponse);
       state.collection = state.countries.concat(state.tags);
+      sortCollection(state);
     },
     
     countries(state, axiosResponse) {
       state.countries = appendToArray('country', axiosResponse);
       state.collection = state.tags.concat(state.countries);
+      sortCollection(state);
     },
     
     articles(state, axiosResponse) {
@@ -54,6 +52,17 @@ export const store = new Vuex.Store({
     },
   }
 });
+
+function sortCollection(state) {
+  state.collection = state.collection.sort((a, b) => {
+    let nameA = a.name.toUpperCase();
+    let nameB = b.name.toUpperCase();
+    
+    if (nameA < nameB) return -1;
+    else if (nameA > nameB) return 1;
+    else return 0;
+  });
+}
 
 function appendToArray(stateKey, axiosResponse) {
   let responseArray = [];
