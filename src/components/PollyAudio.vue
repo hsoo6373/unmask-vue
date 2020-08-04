@@ -77,28 +77,26 @@ export default {
       const sourceUrl = this.$store.getters.getRandomRecording();
       console.log(sourceUrl);
       const sourceNode = this.audioContext.createBufferSource();
-      this.setupAudio(sourceUrl, sourceNode).then(sourceNode.connect(this.getGain(1)))
-      sourceNode.start(0);
+      this.setupAudio(sourceUrl, sourceNode)
+      .then(sourceNode.connect(this.createGain(1)).connect(this.createPanner())).then(sourceNode.start());
       
       // update play delay to be between 12-16 seconds
       this.playDelay = (Math.random() * (17 - 12) + 12) * 1000;
       this.interval = window.setInterval(this.playAudio, this.playDelay);
     },
-    getGain: function(volume) {
+    createGain: function(volume) {
       const gainNode = this.audioContext.createGain();
       gainNode.gain.value = volume;
-      gainNode.connect(this.getPanner());
       return gainNode;
     },
-    getReverb: function() {
+    createReverb: function() {
       const index = Math.floor(Math.random() * this.sampleSize);
       var reverbUrl = this.reverbSamples[index];
       const reverbNode = this.audioContext.createConvolver();
-      
       this.setupAudio(reverbUrl, reverbNode).then(reverbNode.connect(this.getPanner()));
       return reverbNode;
     },
-    getPanner: function() {
+    createPanner: function() {
       var panner = this.audioContext.createPanner();
       panner.panningModel = 'HRTF';
       panner.distanceModel = 'linear';
