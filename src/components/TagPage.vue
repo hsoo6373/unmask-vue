@@ -4,8 +4,8 @@
     <template v-for="repeat in infiniteCounter">
     <ul :key="repeat">
       <h1 :style="{ fontSize: '4em'}">{{ repeat }}</h1>
-      <li v-for="(item, index) in collection" :key="`${repeat} - ${item.name}`">
-        <span :class="assignClass(index, repeat)">{{ item.name }}</span>
+      <li v-for="(item, index) in collection" :key="`${repeat} - ${item}`">
+        <span @click="getArticles(item)" :class="assignClass(index, repeat)">{{ item }}</span>
       </li>
     </ul>
     </template>
@@ -16,6 +16,8 @@
 <script>
 import Observer from './Observer';
 import PollyAudio from './PollyAudio';
+import _ from 'lodash'
+import { router } from '../routes.js'
 
 export default {
   name: 'TagPage',
@@ -40,10 +42,27 @@ export default {
     intersecting: function() {
       this.infiniteCounter++;
     },
+    getArticles: function(item) {
+      router.push({ name: 'tag', params: { tag: item } });
+    },
   },
   computed: {
     collection: function() {
-      return this.$store.getters.getCollection;
+      const article = this.$route.params.article;
+      const tag = this.$route.params.tag;
+      if (article !== undefined) {
+        return this.$store.getters.getArticle(article);
+      }
+      else if (tag !== undefined) {
+        if (this.$store.getters.getTags.some(item => item.tag === tag))
+          return this.$store.getters.getTagArticles(tag).articles;
+        else if (this.$store.getters.getCountries.some(item => item.country === tag))
+          return this.$store.getters.getCountryArticles(tag).articles;
+      }
+      else if (_.isEmpty(this.$route.params)) {
+         return this.$store.getters.getCollection;
+      }
+      return null;
     },
   }
 }
@@ -80,7 +99,7 @@ ul {
   }
   
   li { 
-    margin: 4% 2%;
+    margin: 3% 1%;
     z-index: 2;
     background: none;
     
@@ -119,12 +138,14 @@ ul {
       text-align: center;
       cursor: pointer;
       transition: transform .2s;
+      letter-spacing: .25rem;
       
       &:hover {
+        position: relative;
+        transition: transform .2s;
         transform: scale(1.25);
       }
     }
-    
   }
 }
 
