@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import _ from 'lodash'
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
@@ -10,41 +11,35 @@ export const store = new Vuex.Store({
     collection: [],
   },
   getters: {
-    getCollection: state => query => {
-      // return all
-      if (query === undefined)
-        return state.collection
-      else
-        return state.collection.filter(item => item.name === query)
-    },
+    getCollection: state  => state.collection.sort(),
     
     getTags: state => state.tags,
     
     getCountries: state => state.countries,
     
-    getTagArticles: state => tag => state.tags.filter(item => item.tag === tag),
+    getTagArticles: state => tag => state.tags.find(item => item.tag === tag),
     
-    getCountryArticles: state => country => state.countries.filter(item => item.country === country),
+    getCountryArticles: state => country => state.countries.find(item => item.country === country),
     
-    getArticles: state => article => state.articles.find(item =>  item.title === article),
+    getArticles: state => state.articles,
+    
+    getArticle: state => article => state.articles.find(item =>  item.title === article),
     
     getRandomRecording: state => article => {
       if (article === undefined) {
-        return state.articles[Math.floor(Math.random() * state.articles.length)].speech
+        return _.sample(state.articles).speech;
       } 
     }
   },
   mutations: {
     tags(state, axiosResponse) {
-      state.tags = appendToArray('tag', axiosResponse);
-      state.collection = state.countries.concat(state.tags);
-      sortCollection(state);
+      state.tags = axiosResponse 
+      mapCollection(state);
     },
     
     countries(state, axiosResponse) {
-      state.countries = appendToArray('country', axiosResponse);
-      state.collection = state.tags.concat(state.countries);
-      sortCollection(state);
+      state.countries = axiosResponse; 
+      mapCollection(state);
     },
     
     articles(state, axiosResponse) {
@@ -53,25 +48,14 @@ export const store = new Vuex.Store({
   }
 });
 
-function sortCollection(state) {
-  state.collection = state.collection.sort((a, b) => {
-    let nameA = a.name.toUpperCase();
-    let nameB = b.name.toUpperCase();
-    
-    if (nameA < nameB) return -1;
-    else if (nameA > nameB) return 1;
-    else return 0;
+function mapCollection(state) {
+  const temp = state.tags.concat(state.countries);
+  state.collection = temp.map(obj => {
+    if (Object.prototype.hasOwnProperty.call(obj, 'tag')) {
+      return obj.tag;
+    }
+    else {
+      return obj.country;
+    }
   });
-}
-
-function appendToArray(stateKey, axiosResponse) {
-  let responseArray = [];
-  axiosResponse.forEach(element => {
-    let responseObj = {
-      name: element[stateKey],
-      articles: element.articles,
-    };
-    responseArray.push(responseObj);
-  });
-  return responseArray;
 }
