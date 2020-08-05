@@ -50,12 +50,7 @@ export const store = new Vuex.Store({
 
 function mapCollection(state) {
   const temp = state.tags.concat(state.countries);
-  state.collection = temp.map(obj => {
-    if (Object.prototype.hasOwnProperty.call(obj, 'tag')) {
-      return obj.tag;
-    }
-    else {
-      return obj.country;
-    }
+  return _.map(temp, function(item) {
+    return item.tag || item.country;
   });
 }
