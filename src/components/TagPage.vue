@@ -43,7 +43,7 @@ export default {
       this.infiniteCounter++;
     },
     getArticles: function(item) {
-      router.push({ name: 'tag', params: { tag: item } });
+      router.push({ name: 'tag', params: { tag: item.split(' ').join('-') } });
     },
   },
   computed: {
