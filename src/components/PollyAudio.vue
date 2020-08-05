@@ -74,7 +74,7 @@ export default {
     },
     playAudio: function() {
       clearInterval(this.interval);
-      const sourceUrl = this.$store.getters.getRandomRecording();
+      const sourceUrl = this.$store.getters.getRandomRecording(this.$route.params);
       console.log(sourceUrl);
       const sourceNode = this.audioContext.createBufferSource();
       this.setupAudio(sourceUrl, sourceNode)

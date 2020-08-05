@@ -13,22 +13,27 @@ export const store = new Vuex.Store({
   getters: {
     getCollection: state  => state.collection.sort(),
     
-    getTags: state => state.tags,
+    getArticlesByTag: state => tag => {
+      if (_.some(state.tags, {tag})) {
+        return state.tags.find(item => item.tag === tag).articles;
+      }
+      else if (_.some(state.countries, {country: tag})) {
+        return state.countries.find(item => item.country === tag).articles;
+      }
+    },
     
-    getCountries: state => state.countries,
+    getArticleByName: state => article => state.articles.find(item =>  item.title === article),
     
-    getTagArticles: state => tag => state.tags.find(item => item.tag === tag),
-    
-    getCountryArticles: state => country => state.countries.find(item => item.country === country),
-    
-    getArticles: state => state.articles,
-    
-    getArticle: state => article => state.articles.find(item =>  item.title === article),
-    
-    getRandomRecording: state => article => {
-      if (article === undefined) {
+    getRandomRecording: state => query => {
+      if (_.size(query) === 0) {
         return _.sample(state.articles).speech;
-      } 
+      }
+      else if (_.some(state.articles, item => _.includes(item.tags, query.tag))) {
+        return _.sample(_.filter(state.articles, item => _.includes(item.tags, query.tag))).speech
+      }
+      else if (_.some(state.articles, {country: query.tag})) {
+        return _.sample(_.filter(state.articles, item => item.country === query.tag)).speech
+      }
     }
   },
   mutations: {
@@ -49,6 +54,5 @@ export const store = new Vuex.Store({
 });
 
 function mapCollection(state) {
-  const temp = state.tags.concat(state.countries);
-  state.collection = _.map(temp, item => item.tag || item.country);
+  state.collection = _.map(_.concat(state.tags, state.countries), item => item.tag || item.country);
 }

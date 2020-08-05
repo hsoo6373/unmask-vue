@@ -51,18 +51,15 @@ export default {
       const article = this.$route.params.article;
       const tag = this.$route.params.tag;
       if (article !== undefined) {
-        return this.$store.getters.getArticle(article);
+        return this.$store.getters.getArticleByName(article);
       }
       else if (tag !== undefined) {
-        if (this.$store.getters.getTags.some(item => item.tag === tag))
-          return this.$store.getters.getTagArticles(tag).articles;
-        else if (this.$store.getters.getCountries.some(item => item.country === tag))
-          return this.$store.getters.getCountryArticles(tag).articles;
+        return this.$store.getters.getArticlesByTag(tag);
       }
       else if (_.isEmpty(this.$route.params)) {
          return this.$store.getters.getCollection;
       }
-      return null;
+      return 'Unavailable at this momement';
     },
   }
 }
