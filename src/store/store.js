@@ -50,7 +50,5 @@ export const store = new Vuex.Store({
 
 function mapCollection(state) {
   const temp = state.tags.concat(state.countries);
-  return _.map(temp, function(item) {
-    return item.tag || item.country;
-  });
+  state.collection = _.map(temp, item => item.tag || item.country);
 }
