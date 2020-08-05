@@ -17,6 +17,12 @@ export default {
     setCountries: function() { axios().get('/countries/').then(response => this.$store.commit('countries', response.data)) },
     setArticles: function() { axios().get('/articles/').then(response => this.$store.commit('articles', response.data)) },
   },
+  watch: {
+    $route: function(to, from) {
+      console.log(to.params, from);
+      this.$store.commit('recordings', to.params);
+    }
+  }
 }
 </script>
 

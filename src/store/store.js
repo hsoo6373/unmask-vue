@@ -3,17 +3,21 @@ import Vuex from 'vuex'
 import _ from 'lodash'
 Vue.use(Vuex);
 
+let audioIndex = 0;
+
 export const store = new Vuex.Store({
   state: {
     tags: [],
     countries: [],
     articles: [],
     collection: [],
+    recordings: [],
   },
   getters: {
     getCollection: state  => state.collection.sort(),
     
     getArticlesByTag: state => tag => {
+      tag = tag.replace('-', ' ');
       if (_.some(state.tags, {tag})) {
         return state.tags.find(item => item.tag === tag).articles;
       }
@@ -22,18 +26,14 @@ export const store = new Vuex.Store({
       }
     },
     
-    getArticleByName: state => article => state.articles.find(item =>  item.title === article),
+    getArticleByName: state => article => state.articles.find(item =>  item.title === article.replace('-', ' ')),
     
-    getRandomRecording: state => query => {
-      if (_.size(query) === 0) {
-        return _.sample(state.articles).speech;
+    getRecordings: state => index => {
+      console.log(index);
+      if (audioIndex >= _.size(state.recordings)) {
+        audioIndex = 0;
       }
-      else if (_.some(state.articles, item => _.includes(item.tags, query.tag))) {
-        return _.sample(_.filter(state.articles, item => _.includes(item.tags, query.tag))).speech
-      }
-      else if (_.some(state.articles, {country: query.tag})) {
-        return _.sample(_.filter(state.articles, item => item.country === query.tag)).speech
-      }
+      return state.recordings[audioIndex++];
     }
   },
   mutations: {
@@ -50,6 +50,23 @@ export const store = new Vuex.Store({
     articles(state, axiosResponse) {
       state.articles = axiosResponse;
     },
+    
+    recordings(state, params) {
+      this.recording_index = 0;
+      
+      if (_.isEmpty(params)) {
+        state.recordings = _.map(_.shuffle(state.articles), item => item.speech);
+        return;
+      }
+      
+      let tag = params.tag.replace('-', ' ');
+      if (_.some(state.articles, item => _.includes(item.tags, tag))) {
+        state.recordings = _.map(_.shuffle(_.filter(state.articles, item => _.includes(item.tags, tag))), item => item.speech);
+      }
+      else if (_.some(state.articles, {country: tag})) { 
+        state.recordings = _.map(_.shuffle(_.filter(state.articles, item => item.country === tag)), item => item.speech);
+      }
+    }
   }
 });
 

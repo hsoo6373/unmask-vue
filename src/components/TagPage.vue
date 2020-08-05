@@ -61,7 +61,7 @@ export default {
       }
       return 'Unavailable at this momement';
     },
-  }
+  },
 }
 </script>
 

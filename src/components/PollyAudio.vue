@@ -45,6 +45,7 @@ export default {
     };
   },
   mounted: function() {
+    console.log('yes');
     this.setup();
     window.setTimeout(this.playAudio, this.playDelay);
   },
@@ -74,9 +75,11 @@ export default {
     },
     playAudio: function() {
       clearInterval(this.interval);
-      const sourceUrl = this.$store.getters.getRandomRecording(this.$route.params);
+      
+      const sourceUrl = this.$store.getters.getRecordings();
       console.log(sourceUrl);
       const sourceNode = this.audioContext.createBufferSource();
+      
       this.setupAudio(sourceUrl, sourceNode)
       .then(sourceNode.connect(this.createGain(1)).connect(this.createPanner())).then(sourceNode.start());
       
@@ -145,6 +148,6 @@ export default {
       const quads = ['FIRST', 'SECOND', 'FOURTH', 'THIRD'];
       return this.quadrant[quads[this.quadrantIndex]];
     },
-  }
+  },
 }
 </script>
