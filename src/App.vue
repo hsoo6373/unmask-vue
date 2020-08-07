@@ -20,7 +20,7 @@ export default {
     setRecordings: function() { this.$store.commit('recordings', this.$route.params) },
   },
   watch: {
-    $route: function(to, from) {
+    $route: function(to) {
       this.$store.commit('recordings', to.params);
     }
   }

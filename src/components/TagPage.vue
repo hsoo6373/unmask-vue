@@ -43,7 +43,13 @@ export default {
       this.infiniteCounter++;
     },
     getArticles: function(item) {
-      router.push({ name: 'tag', params: { tag: item.split(' ').join('-') } });
+      let slugified = item.split(' ').join('-');
+      if (this.$store.getters.isTag(item)) {
+        router.push({ name: 'tag', params: { tag: slugified } });
+      }
+      else {
+        router.push({ name: 'article', params: { tag: this.$route.params.tag, article: slugified }})
+      }
     },
   },
   computed: {
@@ -70,7 +76,8 @@ export default {
 
 .tag-page {
   font-family: "CustomY78";
-  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 ul {
@@ -78,9 +85,8 @@ ul {
   list-style: none;
   font-size: 2em;
   display: flex;
-  flex-direction: rows;
   justify-content: space-around;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   position: relative;
   
   h1 {
