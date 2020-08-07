@@ -45,7 +45,6 @@ export default {
     };
   },
   mounted: function() {
-    console.log('yes');
     this.setup();
     window.setTimeout(this.playAudio, this.playDelay);
   },

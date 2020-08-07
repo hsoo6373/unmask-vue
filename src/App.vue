@@ -11,15 +11,16 @@ export default {
     this.setTags();
     this.setCountries();
     this.setArticles();
+    this.setRecordings();
   },
   methods: {
     setTags: function() { axios().get('/tags/').then(response => this.$store.commit('tags', response.data)) },
     setCountries: function() { axios().get('/countries/').then(response => this.$store.commit('countries', response.data)) },
     setArticles: function() { axios().get('/articles/').then(response => this.$store.commit('articles', response.data)) },
+    setRecordings: function() { this.$store.commit('recordings', this.$route.params) },
   },
   watch: {
     $route: function(to, from) {
-      console.log(to.params, from);
       this.$store.commit('recordings', to.params);
     }
   }
