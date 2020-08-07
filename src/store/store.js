@@ -34,6 +34,10 @@ export const store = new Vuex.Store({
         audioIndex = 0;
       }
       return state.recordings[audioIndex++];
+    },
+    
+    isTag: state => tag => {
+      if (_.includes(state.collection, tag)) return true;
     }
   },
   mutations: {
