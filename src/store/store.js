@@ -17,7 +17,7 @@ export const store = new Vuex.Store({
     getCollection: state  => state.collection.sort(),
     
     getArticlesByTag: state => tag => {
-      tag = tag.replace('-', ' ');
+      tag = clean(tag);
       if (_.some(state.tags, {tag})) {
         return state.tags.find(item => item.tag === tag).articles;
       }
@@ -26,7 +26,7 @@ export const store = new Vuex.Store({
       }
     },
     
-    getArticleByName: state => article => state.articles.find(item =>  item.title === article.replace('-', ' ')),
+    getArticleByName: state => article => state.articles.find(item =>  item.title === clean(article)),
     
     getRecordings: state => index => {
       console.log(index);
@@ -63,12 +63,18 @@ export const store = new Vuex.Store({
         return;
       }
       
-      let tag = params.tag.replace('-', ' ');
-      if (_.some(state.articles, item => _.includes(item.tags, tag))) {
-        state.recordings = _.map(_.shuffle(_.filter(state.articles, item => _.includes(item.tags, tag))), item => item.speech);
+      if (params.article) {
+        state.recordings = _.map(_.filter(state.articles, item => item.title === clean(params.article)), item => item.speech)
       }
-      else if (_.some(state.articles, {country: tag})) { 
-        state.recordings = _.map(_.shuffle(_.filter(state.articles, item => item.country === tag)), item => item.speech);
+      
+      else if (params.tag) {
+        let tag = clean(params.tag);
+        if (_.some(state.articles, item => _.includes(item.tags, tag))) {
+          state.recordings = _.map(_.shuffle(_.filter(state.articles, item => _.includes(item.tags, tag))), item => item.speech);
+        } 
+        else if (_.some(state.articles, {country: tag})) {
+          state.recordings = _.map(_.shuffle(_.filter(state.articles, item => item.country === tag)), item => item.speech);
+        }
       }
     }
   }
@@ -76,4 +82,8 @@ export const store = new Vuex.Store({
 
 function mapCollection(state) {
   state.collection = _.map(_.concat(state.tags, state.countries), item => item.tag || item.country);
+}
+
+function clean(strclean) {
+  return strclean.replace('-', ' ');
 }
