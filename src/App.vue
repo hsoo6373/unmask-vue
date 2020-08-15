@@ -9,6 +9,11 @@ export default {
     await this.$store.dispatch('setData');
     this.$store.dispatch('setAudio', this.$route.params);
   },
+  watch: {
+    '$route' (to){
+        this.$store.dispatch('setAudio', to.params);
+    }
+  }
 }
 </script>
 

@@ -51,7 +51,7 @@ export default {
       else if (this.$store.getters.isCountry(item)) {
         router.push({ name: 'country', params: { country: slugify } });
       }
-      else {
+      else if (this.$store.getters.isArticle(item)) {
         router.push({ name: 'article', params: { tag: this.$route.params.tag, article: slugify }})
       }
     },
@@ -62,19 +62,24 @@ export default {
       const tag = this.$route.params.tag;
       const country = this.$route.params.country;
       
-      if (article !== undefined) {
-        return this.$store.getters.getArticleByName(article);
+      try {
+        if (_.isEmpty(this.$route.params)) {
+           return this.$store.getters.getCollection;
+        }
+        else if (article !== undefined) {
+          return this.$store.getters.getArticleByName(article);
+        }
+        else if (tag !== undefined) {
+          return this.$store.getters.getArticlesByTag(tag);
+        }
+        else if (country !== undefined) {
+          return this.$store.getters.getArticlesByCountry(country);
+        }
       }
-      else if (tag !== undefined) {
-        return this.$store.getters.getArticlesByTag(tag);
+      catch (e) {
+        console.log(e);
       }
-      else if (country !== undefined) {
-        return this.$store.getters.getArticlesByCountry(country);
-      }
-      else if (_.isEmpty(this.$route.params)) {
-         return this.$store.getters.getCollection;
-      }
-      return 'Unavailable at this momement';
+      return '';
     },
   },
 }

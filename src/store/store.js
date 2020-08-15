@@ -18,17 +18,11 @@ export const store = new Vuex.Store({
   getters: {
     getCollection: state  => state.collection.sort(),
     
-    getArticlesByTag: state => tag => {
-      tag = clean(tag);
-      return state.tags.find(item => item.tag === tag).articles;      
-    },
+    getArticlesByTag: state => tag => _.find(state.tags, { tag: clean(tag) }).articles,
     
-    getArticlesByCountry: state => country => {
-      country = clean(country);
-      return state.countries.find(item => item.country === country).articles;
-    },
+    getArticlesByCountry: state => country => _.find(state.countries, { country: clean(country) }).articles,
     
-    getArticleByName: state => article => state.articles.find(item =>  item.title === clean(article)),
+    getArticleByName: state => article => _.find(state.articles, { title: clean(article) }),
     
     getRecordings: state => index => {
       console.log(index);
@@ -45,11 +39,16 @@ export const store = new Vuex.Store({
     },
     
     isCountry: state => country => {
-      console.log(country)
-      if (_.find(state.countries, { country: country })) {
+      if (_.find(state.countries, { country })) {
         return true;
       }
-    }
+    },
+    
+    isArticle: state => article => {
+      if (_.find(state.articles, { title: article })) {
+        return true;
+      }
+    },
   },
   
   mutations: {
