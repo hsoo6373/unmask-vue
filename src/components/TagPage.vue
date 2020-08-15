@@ -1,6 +1,7 @@
 <template>
   <div id="list" class="tag-page">
     <PollyAudio></PollyAudio>
+    <BackButton></BackButton>
     <template v-for="repeat in infiniteCounter">
     <ul :key="repeat">
       <h1 :style="{ fontSize: '4em'}">{{ repeat }}</h1>
@@ -18,6 +19,7 @@ import Observer from './Observer';
 import PollyAudio from './PollyAudio';
 import _ from 'lodash'
 import { router } from '../routes.js'
+import BackButton from './BackButton';
 
 export default {
   name: 'TagPage',
@@ -29,6 +31,7 @@ export default {
   components: {
     Observer,
     PollyAudio,
+    BackButton,
   },
   methods: {
     assignClass: function(index, repeat) {

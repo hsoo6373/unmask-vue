@@ -1,6 +1,7 @@
 <template>
   <div v-click-outside="goToPreviousPage" class="article-page">
     <PollyAudio></PollyAudio>
+    <BackButton></BackButton>
     <h1>{{ title }}</h1>
   </div>
 </template>
@@ -8,14 +9,12 @@
 <script>
 import { router } from '../routes.js'
 import PollyAudio from './PollyAudio';
+import BackButton from './BackButton';
 export default {
   name: 'IndividualArticle',
-  data: function() {
-    return {
-    }
-  },
   components: {
     PollyAudio,
+    BackButton,
   },
   methods: {
     goToPreviousPage: function() {
