@@ -1,22 +1,32 @@
 <template>
   <div v-click-outside="goToPreviousPage" class="article-page">
-    <h1>Hello</h1>
+    <PollyAudio></PollyAudio>
+    <h1>{{ title }}</h1>
   </div>
 </template>
 
 <script>
 import { router } from '../routes.js'
+import PollyAudio from './PollyAudio';
 export default {
   name: 'IndividualArticle',
   data: function() {
     return {
     }
   },
+  components: {
+    PollyAudio,
+  },
   methods: {
     goToPreviousPage: function() {
       router.push({ name: 'tag', params: { tag: this.$route.params.tag } });
     }  
   },
+  computed: {
+    title: function() {
+      return this.$route.params.article.replace('-', ' ');
+    }
+  }
 }
 </script>
 
@@ -31,5 +41,9 @@ export default {
 
 div {
   border: 1px solid blue;
+  
+  h1 {
+    font-size: 5em;
+  }
 }
 </style>

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import _ from 'lodash'
+import axios from '../assets/javascript/articleAPI.js'
 Vue.use(Vuex);
 
 let audioIndex = 0;
@@ -13,6 +14,7 @@ export const store = new Vuex.Store({
     collection: [],
     recordings: [],
   },
+  
   getters: {
     getCollection: state  => state.collection.sort(),
     
@@ -29,7 +31,6 @@ export const store = new Vuex.Store({
     getArticleByName: state => article => state.articles.find(item =>  item.title === clean(article)),
     
     getRecordings: state => index => {
-      console.log(index);
       if (audioIndex >= _.size(state.recordings)) {
         audioIndex = 0;
       }
@@ -40,19 +41,22 @@ export const store = new Vuex.Store({
       if (_.includes(state.collection, tag)) return true;
     }
   },
+  
   mutations: {
-    tags(state, axiosResponse) {
-      state.tags = axiosResponse 
-      mapCollection(state);
+    setTags(state, axiosResponse) {
+      state.tags = axiosResponse;
     },
     
-    countries(state, axiosResponse) {
-      state.countries = axiosResponse; 
-      mapCollection(state);
+    setCountries(state, axiosResponse) {
+      state.countries = axiosResponse;
     },
     
-    articles(state, axiosResponse) {
+    setArticles(state, axiosResponse) {
       state.articles = axiosResponse;
+    },
+    
+    setCollection(state) {
+      state.collection = _.map(_.concat(state.tags, state.countries), item => item.tag || item.country)
     },
     
     recordings(state, params) {
@@ -77,12 +81,23 @@ export const store = new Vuex.Store({
         }
       }
     }
-  }
+  },
+  
+  actions: {
+    async setData({commit}) {
+      let tagResponse = await axios().get('/tags/');
+      commit('setTags', tagResponse.data);
+      
+      let countryResponse = await axios().get('/countries/');
+      commit('setCountries', countryResponse.data);
+      
+      commit('setCollection');
+      
+      let articleResponse = await axios().get('/articles/');
+      commit('setArticles', articleResponse.data)
+    }
+  },
 });
-
-function mapCollection(state) {
-  state.collection = _.map(_.concat(state.tags, state.countries), item => item.tag || item.country);
-}
 
 function clean(strclean) {
   return strclean.replace('-', ' ');

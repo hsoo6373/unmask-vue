@@ -3,27 +3,12 @@
 </template>
 
 <script>
-import axios from './assets/javascript/articleAPI.js'
-
 export default {
   name: 'App',
-  created: function() {
-    this.setTags();
-    this.setCountries();
-    this.setArticles();
-    this.setRecordings();
+  async created() {
+    await this.$store.dispatch('setData');
+    this.$store.commit('recordings', this.$route.params);
   },
-  methods: {
-    setTags: function() { axios().get('/tags/').then(response => this.$store.commit('tags', response.data)) },
-    setCountries: function() { axios().get('/countries/').then(response => this.$store.commit('countries', response.data)) },
-    setArticles: function() { axios().get('/articles/').then(response => this.$store.commit('articles', response.data)) },
-    setRecordings: function() { this.$store.commit('recordings', this.$route.params) },
-  },
-  watch: {
-    $route: function(to) {
-      this.$store.commit('recordings', to.params);
-    }
-  }
 }
 </script>
 

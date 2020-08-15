@@ -76,6 +76,7 @@ export default {
 
 .tag-page {
   font-family: "CustomY78";
+  width: 100%;
   margin-left: 5%;
   margin-right: 5%;
 }
