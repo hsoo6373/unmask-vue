@@ -7,7 +7,7 @@ export default {
   name: 'App',
   async created() {
     await this.$store.dispatch('setData');
-    this.$store.commit('recordings', this.$route.params);
+    this.$store.dispatch('setAudio', this.$route.params);
   },
 }
 </script>

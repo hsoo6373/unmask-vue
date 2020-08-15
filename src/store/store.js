@@ -31,6 +31,7 @@ export const store = new Vuex.Store({
     getArticleByName: state => article => state.articles.find(item =>  item.title === clean(article)),
     
     getRecordings: state => index => {
+      console.log(index);
       if (audioIndex >= _.size(state.recordings)) {
         audioIndex = 0;
       }
@@ -59,27 +60,9 @@ export const store = new Vuex.Store({
       state.collection = _.map(_.concat(state.tags, state.countries), item => item.tag || item.country)
     },
     
-    recordings(state, params) {
+    setAudio(state, recordings) {
       this.recording_index = 0;
-      
-      if (_.isEmpty(params)) {
-        state.recordings = _.map(_.shuffle(state.articles), item => item.speech);
-        return;
-      }
-      
-      if (params.article) {
-        state.recordings = _.map(_.filter(state.articles, item => item.title === clean(params.article)), item => item.speech)
-      }
-      
-      else if (params.tag) {
-        let tag = clean(params.tag);
-        if (_.some(state.articles, item => _.includes(item.tags, tag))) {
-          state.recordings = _.map(_.shuffle(_.filter(state.articles, item => _.includes(item.tags, tag))), item => item.speech);
-        } 
-        else if (_.some(state.articles, {country: tag})) {
-          state.recordings = _.map(_.shuffle(_.filter(state.articles, item => item.country === tag)), item => item.speech);
-        }
-      }
+      state.recordings = _.shuffle(recordings);
     }
   },
   
@@ -95,6 +78,24 @@ export const store = new Vuex.Store({
       
       let articleResponse = await axios().get('/articles/');
       commit('setArticles', articleResponse.data)
+    },
+    
+    setAudio({commit, state}, params) {
+      if (_.isEmpty(params)) {
+        commit('setAudio', _.map(state.articles, item => item.speech));
+      } 
+      else if (params.article) {
+        commit('setAudio', _.map(_.filter(state.articles, item => item.title === clean(params.article)), item => item.speech));
+      }
+      else if (params.tag) {
+        let tag = clean(params.tag);
+        if (_.some(state.articles, item => _.includes(item.tags, tag))) {
+          commit('setAudio', _.map(_.filter(state.articles, item => _.includes(item.tags, tag)), item => item.speech))
+        }
+        else {
+          commit('setAudio', _.map(_.filter(state.articles, item => item.country === tag), item => item.speech));
+        }
+      }
     }
   },
 });
