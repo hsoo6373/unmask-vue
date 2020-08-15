@@ -12,6 +12,7 @@ export const router = new VueRouter({
         { name: 'home', path: '/', component: LandingPage },
         { name: 'tags', path: '/tags', component: TagPage },
         { name: 'tag', path: '/tags/:tag', component: TagPage },
+        { name: 'country', path: '/tags/:country', component: TagPage },
         { name: 'article', path: '/tags/:tag/:article', component: IndividualArticle },
         { path: '*', redirect: { name: 'home' } },
     ]

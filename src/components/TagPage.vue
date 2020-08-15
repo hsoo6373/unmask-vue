@@ -42,13 +42,17 @@ export default {
     intersecting: function() {
       this.infiniteCounter++;
     },
-    getArticles: function(item) {
-      let slugified = item.split(' ').join('-');
+    getArticles: async function(item) {
+      let slugify = item.split(' ').join('-');
+      
       if (this.$store.getters.isTag(item)) {
-        router.push({ name: 'tag', params: { tag: slugified } });
+        router.push({ name: 'tag', params: { tag: slugify }});
+      }
+      else if (this.$store.getters.isCountry(item)) {
+        router.push({ name: 'country', params: { country: slugify } });
       }
       else {
-        router.push({ name: 'article', params: { tag: this.$route.params.tag, article: slugified }})
+        router.push({ name: 'article', params: { tag: this.$route.params.tag, article: slugify }})
       }
     },
   },
@@ -56,11 +60,16 @@ export default {
     collection: function() {
       const article = this.$route.params.article;
       const tag = this.$route.params.tag;
+      const country = this.$route.params.country;
+      
       if (article !== undefined) {
         return this.$store.getters.getArticleByName(article);
       }
       else if (tag !== undefined) {
         return this.$store.getters.getArticlesByTag(tag);
+      }
+      else if (country !== undefined) {
+        return this.$store.getters.getArticlesByCountry(country);
       }
       else if (_.isEmpty(this.$route.params)) {
          return this.$store.getters.getCollection;

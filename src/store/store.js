@@ -20,12 +20,12 @@ export const store = new Vuex.Store({
     
     getArticlesByTag: state => tag => {
       tag = clean(tag);
-      if (_.some(state.tags, {tag})) {
-        return state.tags.find(item => item.tag === tag).articles;
-      }
-      else if (_.some(state.countries, {country: tag})) {
-        return state.countries.find(item => item.country === tag).articles;
-      }
+      return state.tags.find(item => item.tag === tag).articles;      
+    },
+    
+    getArticlesByCountry: state => country => {
+      country = clean(country);
+      return state.countries.find(item => item.country === country).articles;
     },
     
     getArticleByName: state => article => state.articles.find(item =>  item.title === clean(article)),
@@ -39,7 +39,16 @@ export const store = new Vuex.Store({
     },
     
     isTag: state => tag => {
-      if (_.includes(state.collection, tag)) return true;
+      if (_.find(state.tags, { tag })) {
+        return true;
+      }
+    },
+    
+    isCountry: state => country => {
+      console.log(country)
+      if (_.find(state.countries, { country: country })) {
+        return true;
+      }
     }
   },
   
@@ -63,7 +72,7 @@ export const store = new Vuex.Store({
     setAudio(state, recordings) {
       this.recording_index = 0;
       state.recordings = _.shuffle(recordings);
-    }
+    },
   },
   
   actions: {
@@ -96,7 +105,7 @@ export const store = new Vuex.Store({
           commit('setAudio', _.map(_.filter(state.articles, item => item.country === tag), item => item.speech));
         }
       }
-    }
+    },
   },
 });
 
