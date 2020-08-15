@@ -98,12 +98,11 @@ export const store = new Vuex.Store({
       }
       else if (params.tag) {
         let tag = clean(params.tag);
-        if (_.some(state.articles, item => _.includes(item.tags, tag))) {
-          commit('setAudio', _.map(_.filter(state.articles, item => _.includes(item.tags, tag)), item => item.speech))
-        }
-        else {
-          commit('setAudio', _.map(_.filter(state.articles, item => item.country === tag), item => item.speech));
-        }
+        commit('setAudio', _.map(_.filter(state.articles, item => _.includes(item.tags, tag)), item => item.speech))
+      }
+      else if (params.country) {
+        let country = clean(params.country);
+        commit('setAudio', _.map(_.filter(state.articles, item => item.country === country), item => item.speech));
       }
     },
   },
